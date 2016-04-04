@@ -1,7 +1,7 @@
 {
     "textures": {
-        "0": "blocks/chunkloader",
-        "1": "blocks/glass"
+        "0": "librarian:blocks/chunkloader",
+        "1": "librarian:blocks/glass"
     },
     "elements": [
         {
