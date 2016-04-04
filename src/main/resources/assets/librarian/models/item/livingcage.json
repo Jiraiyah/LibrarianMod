@@ -1,0 +1,12 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "librarian:items/livingcage"
+    },
+    "overrides" :[{
+        "predicate" : {
+            "livingcage:full": 1
+        },
+        "model": "librarian:item/livingcagefull"
+    }]
+}
