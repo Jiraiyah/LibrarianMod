@@ -1,5 +1,7 @@
 {
+    "parent": "block/cube_all",
     "textures": {
+        "all": "librarian:blocks/chunkloader",
         "0": "librarian:blocks/chunkloader",
         "1": "librarian:blocks/glass"
     },

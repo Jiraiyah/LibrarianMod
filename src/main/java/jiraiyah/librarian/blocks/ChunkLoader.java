@@ -2,30 +2,33 @@ package jiraiyah.librarian.blocks;
 
 import jiraiyah.librarian.Librarian;
 import jiraiyah.librarian.references.Reference;
-import net.minecraft.block.BlockContainer;
+import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class ChunkLoader extends BlockContainer
+import static net.minecraft.util.BlockRenderLayer.CUTOUT;
+
+public class ChunkLoader extends Block //BlockContainer
 {
 
+    //region cTor
     public ChunkLoader()
     {
-        this(Material.glass);
+        this(Material.rock);
         setUnlocalizedName(Reference.MOD_ID.toLowerCase() + "." + "chunkloader");
         setRegistryName("chunkloader");
         setHardness(20);
-        setResistance(200);
+        setResistance(100);
         setStepSound(SoundType.STONE);
         setCreativeTab(Librarian.CREATIVE_TAB);
     }
@@ -34,7 +37,9 @@ public class ChunkLoader extends BlockContainer
     {
         super(materialIn);
     }
+    //endregion
 
+    //region Block Rendering
     @Override
     public boolean isNormalCube(IBlockState state)
     {
@@ -42,7 +47,7 @@ public class ChunkLoader extends BlockContainer
     }
 
     @Override
-    public boolean isFullyOpaque(IBlockState state)
+    public boolean isOpaqueCube(IBlockState state)
     {
         return false;
     }
@@ -52,6 +57,13 @@ public class ChunkLoader extends BlockContainer
     {
         return false;
     }
+
+    @Override
+    public BlockRenderLayer getBlockLayer()
+    {
+        return CUTOUT;
+    }
+    //endregion
 
     @Override
     public int damageDropped(IBlockState state)
@@ -91,9 +103,9 @@ public class ChunkLoader extends BlockContainer
         // TODO : add code
     }
 
-    @Override
+    /*@Override
     public TileEntity createNewTileEntity(World worldIn, int meta)
     {
         return null;
-    }
+    }*/
 }
