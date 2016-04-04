@@ -42,14 +42,14 @@ version += ".$gitRevision"
 //************************************************************* CURSE ************************************************************
 //********************************************************************************************************************************
 
-curseforge {
-    apiKey = project.curseforge_key_Jpiston
-    project {
-        id = project.curse_projectId
-        changelog = file('changelog.txt')
-        releaseType = 'alpha'
-    }
-}
+//curseforge {
+//    apiKey = project.curseforge_key_Jpiston
+//    project {
+//        id = project.curse_projectId
+//        changelog = file('changelog.txt')
+//        releaseType = 'alpha'
+//    }
+//}
 
 //********************************************************************************************************************************
 //*********************************************************** License ************************************************************

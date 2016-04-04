@@ -9,8 +9,8 @@
   "updateUrl": "",
   "authorList": ["Jiraiyah"],
   "credits": "Chicken bones for his source code, I learned a lot from it.",
-  "logoFile": "",
+  "logoFile": "assets/librarian/textures/logo/logo.png",
   "screenshots": [],
-  "dependencies": []
+  "dependencies": ["MinecraftForge"]
 }
 ]

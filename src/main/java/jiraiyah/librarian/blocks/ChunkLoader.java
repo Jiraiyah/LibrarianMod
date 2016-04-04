@@ -2,13 +2,15 @@ package jiraiyah.librarian.blocks;
 
 import jiraiyah.librarian.Librarian;
 import jiraiyah.librarian.references.Reference;
-import net.minecraft.block.Block;
+import jiraiyah.librarian.tileEntities.ChunkLoaderTile;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -18,7 +20,7 @@ import net.minecraft.world.World;
 
 import static net.minecraft.util.BlockRenderLayer.CUTOUT;
 
-public class ChunkLoader extends Block //BlockContainer
+public class ChunkLoader extends BlockContainer
 {
 
     //region cTor
@@ -29,7 +31,7 @@ public class ChunkLoader extends Block //BlockContainer
         setRegistryName("chunkloader");
         setHardness(20);
         setResistance(100);
-        setStepSound(SoundType.STONE);
+        blockSoundType = SoundType.STONE;
         setCreativeTab(Librarian.CREATIVE_TAB);
     }
 
@@ -103,9 +105,9 @@ public class ChunkLoader extends Block //BlockContainer
         // TODO : add code
     }
 
-    /*@Override
+    @Override
     public TileEntity createNewTileEntity(World worldIn, int meta)
     {
-        return null;
-    }*/
+        return new ChunkLoaderTile();
+    }
 }
