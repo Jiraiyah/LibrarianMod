@@ -21,7 +21,7 @@ public class ChunkLoader extends BlockContainer
 
     public ChunkLoader()
     {
-        this(Material.rock);
+        this(Material.glass);
         setUnlocalizedName(Reference.MOD_ID.toLowerCase() + "." + "chunkloader");
         setRegistryName("chunkloader");
         setHardness(20);
@@ -43,6 +43,12 @@ public class ChunkLoader extends BlockContainer
 
     @Override
     public boolean isFullyOpaque(IBlockState state)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isFullCube(IBlockState state)
     {
         return false;
     }
