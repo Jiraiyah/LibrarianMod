@@ -1,0 +1,16 @@
+[
+{
+  "modid": "librarian",
+  "name": "Librarian",
+  "description": "A mod that will teach you stuff by books. Some usefull blocks and items also is there for you.",
+  "version": "mod_version",
+  "mcversion": "minecraft_version",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Jiraiyah"],
+  "credits": "Chicken bones for his source code, I learned a lot from it.",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
