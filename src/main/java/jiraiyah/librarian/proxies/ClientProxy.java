@@ -16,14 +16,15 @@ public class ClientProxy extends CommonProxy
     {
         super.preInit(event);
         ClientEventRegister.register();
+        BlockRendererRegisters.register();
+        ItemRendererRegisters.register();
     }
 
     @Override
     public void init(FMLInitializationEvent event)
     {
         super.init(event);
-        BlockRendererRegisters.register();
-        ItemRendererRegisters.register();
+
         TileEntitiesRendererRegister.register();
     }
 
