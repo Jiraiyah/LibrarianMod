@@ -1,7 +1,7 @@
 package jiraiyah.librarian.blocks;
 
 import jiraiyah.librarian.Librarian;
-import jiraiyah.librarian.renderers.Reference;
+import jiraiyah.librarian.references.Reference;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;

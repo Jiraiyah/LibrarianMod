@@ -1,7 +1,7 @@
 package jiraiyah.librarian;
 
 import jiraiyah.librarian.proxies.CommonProxy;
-import jiraiyah.librarian.renderers.Reference;
+import jiraiyah.librarian.references.Reference;
 import jiraiyah.librarian.utilities.GenericCreativeTab;
 import net.minecraft.init.Items;
 import net.minecraftforge.fml.common.Loader;

@@ -1,6 +1,6 @@
 package jiraiyah.librarian.inits.items;
 
-import jiraiyah.librarian.renderers.Reference;
+import jiraiyah.librarian.references.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;

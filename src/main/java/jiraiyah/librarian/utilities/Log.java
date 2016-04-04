@@ -1,6 +1,6 @@
 package jiraiyah.librarian.utilities;
 
-import jiraiyah.librarian.renderers.Reference;
+import jiraiyah.librarian.references.Reference;
 import net.minecraftforge.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
 

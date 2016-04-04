@@ -1,6 +1,6 @@
 package jiraiyah.librarian.inits;
 
-import jiraiyah.librarian.renderers.Reference;
+import jiraiyah.librarian.references.Reference;
 import jiraiyah.librarian.utilities.Log;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 

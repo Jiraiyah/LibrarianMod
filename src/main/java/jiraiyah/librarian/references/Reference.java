@@ -1,4 +1,4 @@
-package jiraiyah.librarian.renderers;
+package jiraiyah.librarian.references;
 
 public class Reference
 {
