@@ -9,7 +9,10 @@ public class BlockRendererRegisters
 {
     public static void register()
     {
-        registerBlock(BlockInits.CHUNK_LOADER);
+        if (BlockInits.BLOCK_LIST.size() == 0)
+            return;
+        for(Block block : BlockInits.BLOCK_LIST)
+            registerBlock(block);
     }
 
     private static void registerBlock(Block block)

@@ -1,17 +1,17 @@
 package jiraiyah.librarian.blocks;
 
 import jiraiyah.librarian.Librarian;
+import jiraiyah.librarian.references.Names;
 import jiraiyah.librarian.references.Reference;
-import jiraiyah.librarian.tileEntities.ChunkLoaderTile;
-import net.minecraft.block.BlockContainer;
+import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -20,15 +20,15 @@ import net.minecraft.world.World;
 
 import static net.minecraft.util.BlockRenderLayer.CUTOUT;
 
-public class ChunkLoader extends BlockContainer
+public class ChunkLoader extends Block
 {
 
     //region cTor
     public ChunkLoader()
     {
         this(Material.rock);
-        setUnlocalizedName(Reference.MOD_ID.toLowerCase() + "." + "chunkloader");
-        setRegistryName("chunkloader");
+        setUnlocalizedName(Reference.MOD_ID.toLowerCase() + "." + Names.CHUNK_LOADER_NAME);
+        setRegistryName(Names.CHUNK_LOADER_NAME);
         setHardness(20);
         setResistance(100);
         blockSoundType = SoundType.STONE;
@@ -65,6 +65,13 @@ public class ChunkLoader extends BlockContainer
     {
         return CUTOUT;
     }
+
+    @Override
+    public EnumBlockRenderType getRenderType(IBlockState state)
+    {
+        return EnumBlockRenderType.MODEL;
+    }
+
     //endregion
 
     @Override
@@ -103,11 +110,5 @@ public class ChunkLoader extends BlockContainer
         if (worldIn.isRemote)
             return;
         // TODO : add code
-    }
-
-    @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta)
-    {
-        return new ChunkLoaderTile();
     }
 }

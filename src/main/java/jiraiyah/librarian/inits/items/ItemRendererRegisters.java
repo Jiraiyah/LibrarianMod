@@ -8,10 +8,13 @@ public class ItemRendererRegisters
 {
     public static void register()
     {
-
+        if (ItemInits.ITEM_LIST.size() == 0)
+            return;
+        for(Item item : ItemInits.ITEM_LIST)
+            registerItem(item);
     }
 
-    private static void registerBlock(Item item)
+    private static void registerItem(Item item)
     {
         ModelLoader.setCustomModelResourceLocation(item, 0,
                 new ModelResourceLocation( item.getRegistryName(), "inventory"));
