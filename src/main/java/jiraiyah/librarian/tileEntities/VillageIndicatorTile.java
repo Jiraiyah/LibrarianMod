@@ -68,7 +68,7 @@ public class VillageIndicatorTile extends TileEntity implements ITickable
                     villageDataList.add(new VillageData(radius, center, doorPositions));
                 });
         if (!worldObj.isRemote)
-            VillageIdicatorMessage.sendMessage(villageDataList);
+            VillageIdicatorMessage.sendMessage(getPos(), villageDataList);
     }
 
     private void drawVillageInfo()
