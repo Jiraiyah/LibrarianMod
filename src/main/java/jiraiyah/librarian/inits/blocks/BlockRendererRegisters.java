@@ -12,7 +12,8 @@ public class BlockRendererRegisters
         if (BlockInits.BLOCK_LIST.size() == 0)
             return;
         for(Block block : BlockInits.BLOCK_LIST)
-            registerBlock(block);
+            if (block != null)
+                registerBlock(block);
     }
 
     private static void registerBlock(Block block)

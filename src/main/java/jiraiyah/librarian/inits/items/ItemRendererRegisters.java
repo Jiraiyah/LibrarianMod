@@ -11,7 +11,8 @@ public class ItemRendererRegisters
         if (ItemInits.ITEM_LIST.size() == 0)
             return;
         for(Item item : ItemInits.ITEM_LIST)
-            registerItem(item);
+            if (item != null)
+                registerItem(item);
     }
 
     private static void registerItem(Item item)

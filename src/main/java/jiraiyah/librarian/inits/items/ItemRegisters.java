@@ -10,6 +10,7 @@ public class ItemRegisters
         if (ItemInits.ITEM_LIST.size() == 0)
             return;
         for(Item item : ItemInits.ITEM_LIST)
-            GameRegistry.register(item);
+            if (item != null)
+                GameRegistry.register(item);
     }
 }

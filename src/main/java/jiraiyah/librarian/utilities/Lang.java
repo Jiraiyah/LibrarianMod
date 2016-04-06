@@ -1,9 +1,6 @@
 package jiraiyah.librarian.utilities;
 
-import gnu.trove.map.hash.TObjectIntHashMap;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import jiraiyah.librarian.Librarian;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -18,13 +15,13 @@ import java.util.IllegalFormatException;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static org.apache.commons.io.FileUtils.getFile;
+
 public class Lang
 {
-    private static boolean DEOBF_DEV_ENV = true;
-    private static final TreeMap<String, String> lang = DEOBF_DEV_ENV ? new TreeMap() : null;
+
+    private static final TreeMap<String, String> lang = Librarian.deobf_folder ? new TreeMap() : null;
     private static final HashMap<String, String> textKey = new HashMap();
-    private static final int MAX_KEY_LEN = 32;
-    private static final TObjectIntHashMap<String> numRandomEntries = new TObjectIntHashMap();
 
     public static String translate(String text)
     {
@@ -37,6 +34,15 @@ public class Lang
         return translate(key, text);
     }
 
+    public static String translate(String key, String _default)
+    {
+        if (I18n.canTranslate(key)) {
+            return I18n.translateToLocal(key);
+        }
+        initKey(key, _default);
+        return _default;
+    }
+
     public static String getKey(String text)
     {
         String key = (String)textKey.get(text);
@@ -44,12 +50,24 @@ public class Lang
         {
             key = makeKey(text);
             textKey.put(text, key);
-            if (DEOBF_DEV_ENV) {
+            if (Librarian.deobf_folder) {
                 translate(key, text);
             }
         }
         return key;
     }
+
+    public static String initKey(String key, String _default)
+    {
+        if ((Librarian.deobf_folder) && (FMLLaunchHandler.side() == Side.CLIENT) &&
+                (!_default.equals(lang.get(key))))
+        {
+            lang.put(key, _default);
+            createMissedFile();
+        }
+        return key;
+    }
+
 
     private static String makeKey(String text)
     {
@@ -57,7 +75,6 @@ public class Lang
         String key = "extrautils2.text." + t;
         return key;
     }
-
     @Nonnull
     public static String stripText(String text)
     {
@@ -73,30 +90,23 @@ public class Lang
         return t;
     }
 
-    public static String translate(String key, String _default)
+    public static String translateArgs(String message, Object... args)
     {
-        if (I18n.canTranslate(key)) {
-            return I18n.translateToLocal(key);
-        }
-        initKey(key, _default);
-        return _default;
-    }
-
-    public static String initKey(String key, String _default)
-    {
-        if ((DEOBF_DEV_ENV) && (FMLLaunchHandler.side() == Side.CLIENT) &&
-                (!_default.equals(lang.get(key))))
+        String translate = translate(message);
+        try
         {
-            lang.put(key, _default);
-            createMissedFile();
+            return String.format(translate, args);
         }
-        return key;
+        catch (IllegalFormatException err)
+        {
+            throw new RuntimeException("Message: \"" + message + "\" with key : \"" + getKey(message) + "\" and translation: \"" + translate + "\"", err);
+        }
     }
 
     public static void createMissedFile()
     {
-        String t;
         PrintWriter out = null;
+        String t;
         try
         {
             try
@@ -110,18 +120,18 @@ public class Lang
                 t = null;
                 for (Map.Entry<String, String> entry : lang.entrySet())
                 {
-                    int i = ((String)entry.getKey()).indexOf('.');
+                    int i = (entry.getKey()).indexOf('.');
                     if (i < 0) {
                         i = 1;
                     }
-                    String s = ((String)entry.getKey()).substring(0, i);
+                    String s = (entry.getKey()).substring(0, i);
                     if ((t != null) &&
                             (!t.equals(s))) {
                         out.println("");
                     }
                     t = s;
 
-                    out.println((String)entry.getKey() + "=" + (String)entry.getValue());
+                    out.println(entry.getKey() + "=" + entry.getValue());
                 }
             }
             finally
@@ -136,93 +146,4 @@ public class Lang
             err.printStackTrace();
         }
     }
-
-    private static File getFile()
-    {
-        return new File(new File(new File("."), "debug_text"), "missed_en_US.lang");
-    }
-
-    public static String translateArgs(boolean dummy, String key, String _default, Object... args)
-    {
-        String translate = translate(key, _default);
-        try
-        {
-            return String.format(translate, args);
-        }
-        catch (IllegalFormatException err)
-        {
-            throw new RuntimeException("Message: \"" + _default + "\" with key : \"" + key + "\" and translation: \"" + translate + "\"", err);
-        }
-    }
-
-    public static String translateArgs(String message, Object... args)
-    {
-        String translate = translate(message);
-        try
-        {
-            return String.format(translate, args);
-        }
-        catch (IllegalFormatException err)
-        {
-            throw new RuntimeException("Message: \"" + message + "\" with key : \"" + getKey(message) + "\" and translation: \"" + translate + "\"", err);
-        }
-    }
-
-    public static String getItemName(Block block)
-    {
-        return getItemName(new ItemStack(block));
-    }
-
-    public static String getItemName(Item item)
-    {
-        return getItemName(new ItemStack(item));
-    }
-
-    public static String getItemName(ItemStack stack)
-    {
-        return stack.getDisplayName();
-    }
-
-    public static String random(String key)
-    {
-        return random(key, Random.rand);
-    }
-
-    public static String random(String key, java.util.Random rand)
-    {
-        int n = getNumSelections(key);
-        if (n == 0) {
-            return I18n.translateToLocal(key);
-        }
-        return I18n.translateToLocal(key + "." + rand.nextInt(n));
-    }
-
-    public static String random(String key, int index)
-    {
-        int n = getNumSelections(key);
-        int i = Math.abs(index) % n;
-        return I18n.translateToLocal(key + "." + i);
-    }
-
-    private static int getNumSelections(String key)
-    {
-        int i;
-        if (numRandomEntries.containsKey(key))
-        {
-            i = numRandomEntries.get(key);
-        }
-        else
-        {
-            i = 0;
-            while (I18n.canTranslate(key + "." + i)) {
-                i++;
-            }
-            i++;
-            numRandomEntries.put(key, i);
-        }
-        return i;
-    }
-
-    public static void init() {}
 }
-

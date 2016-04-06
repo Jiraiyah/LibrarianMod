@@ -34,19 +34,19 @@ public class ClientProxy extends CommonProxy
         super.postInit(event);
     }
 
-    public boolean isCtrlDown()
+    public static boolean isCtrlDown()
     {
         return Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) ||
                 Keyboard.isKeyDown(Keyboard.KEY_RCONTROL);
     }
 
-    public boolean isShiftDown()
+    public static boolean isShiftDown()
     {
         return Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ||
                 Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
     }
 
-    public boolean isAltDown()
+    public static boolean isAltDown()
     {
         return Keyboard.isKeyDown(Keyboard.KEY_LMENU) ||
                 Keyboard.isKeyDown(Keyboard.KEY_RMENU);

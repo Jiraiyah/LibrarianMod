@@ -12,8 +12,11 @@ public class BlockRegisters
             return;
         for(Block block : BlockInits.BLOCK_LIST)
         {
-            GameRegistry.register(block);
-            GameRegistry.register(new ItemBlock(block).setRegistryName(block.getRegistryName()));
+            if (block != null)
+            {
+                GameRegistry.register(block);
+                GameRegistry.register(new ItemBlock(block).setRegistryName(block.getRegistryName()));
+            }
         }
     }
 }
