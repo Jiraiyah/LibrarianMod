@@ -1,6 +1,7 @@
 package jiraiyah.librarian.tileEntities;
 
 import jiraiyah.librarian.infrastructure.VillageData;
+import jiraiyah.librarian.network.VillageIdicatorMessage;
 import jiraiyah.librarian.utilities.Log;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
@@ -40,10 +41,6 @@ public class VillageIndicatorTile extends TileEntity implements ITickable
             resetVillageDataList();
             resetCoolDown = resetTimerTicks;
         }
-
-        if (villageDataList == null || villageDataList.size() == 0)
-            return;
-        Log.info("-------------------------------> " + getWorld().isRemote);
         if (!getWorld().isRemote)
             return;
         drawVillageInfo();
@@ -54,7 +51,7 @@ public class VillageIndicatorTile extends TileEntity implements ITickable
         villageDataList.clear();
         float psx = pos.getX();
         float psz = pos.getZ();
-        VillageCollection villageCollection =getWorld().getVillageCollection();
+        VillageCollection villageCollection = getWorld().getVillageCollection();
         if (villageCollection == null)
             return;
         List<Village> allVillages = villageCollection.getVillageList();
@@ -69,32 +66,41 @@ public class VillageIndicatorTile extends TileEntity implements ITickable
                     int radius = v.getVillageRadius();
                     BlockPos center = v.getCenter();
                     List<VillageDoorInfo> doorInfos = v.getVillageDoorInfoList();
-                    villageDataList.add(new VillageData(radius, center, doorInfos));
+                    List<BlockPos> doorPositions = new ArrayList<>();
+                    for (VillageDoorInfo info : doorInfos)
+                        doorPositions.add(info.getDoorBlockPos());
+                    villageDataList.add(new VillageData(radius, center, doorPositions));
                 });
+        if (!worldObj.isRemote)
+            VillageIdicatorMessage.sendMessage(villageDataList);
     }
 
     private void drawVillageInfo()
     {
-        Log.info("-------------------------------> " + villageDataList.size());
+        Log.info("==================================> " + villageDataList.size());
         for(VillageData data : villageDataList)
         {
             //TODO : Draw the village info
             Random random = new Random();
             float rand = random.nextFloat();
             VertexBuffer buffer = Tessellator.getInstance().getBuffer();
-            Log.info("-------------------------------> " + data.center.getX() + " : " + data.center.getY() + " : " + data.center.getZ());
             glTranslatef(data.center.getX(), data.center.getY(), data.center.getZ());
             glDisable(GL_LIGHTING);
             buffer.begin(GL_LINE, DefaultVertexFormats.POSITION_TEX);
-            for(VillageDoorInfo doorinfo : data.doorInfos)
+            for(BlockPos doorinfo : data.doorPositions)
             {
                 //buffer.addVertexData(new int[]{data.center.getX(),data.center.getY(),data.center.getZ()});
                 buffer.addVertexData(new int[]{0, 0, 0});
-                buffer.addVertexData(new int[]{doorinfo.getDoorBlockPos().getX(),doorinfo.getDoorBlockPos().getY() + 1, doorinfo.getDoorBlockPos().getZ()});
+                buffer.addVertexData(new int[]{doorinfo.getX(),doorinfo.getY() + 1, doorinfo.getZ()});
             }
             Tessellator.getInstance().draw();
             buffer.putColorRGB_F4(rand, rand, rand);
             glTranslatef(-data.center.getX(), -data.center.getY(), -data.center.getZ());
         }
+    }
+
+    public void UpdateDataFromServer(List<VillageData> data)
+    {
+        villageDataList = data;
     }
 }

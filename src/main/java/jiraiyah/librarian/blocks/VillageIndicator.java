@@ -5,13 +5,13 @@ import jiraiyah.librarian.references.Names;
 import jiraiyah.librarian.references.Reference;
 import jiraiyah.librarian.tileEntities.VillageIndicatorTile;
 import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class VillageIndicator extends Block implements ITileEntityProvider
+public class VillageIndicator extends Block
 {
     public VillageIndicator()
     {
@@ -30,7 +30,13 @@ public class VillageIndicator extends Block implements ITileEntityProvider
     }
 
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta)
+    public boolean hasTileEntity(IBlockState state)
+    {
+        return true;
+    }
+
+    @Override
+    public TileEntity createTileEntity(World world, IBlockState state)
     {
         return new VillageIndicatorTile();
     }

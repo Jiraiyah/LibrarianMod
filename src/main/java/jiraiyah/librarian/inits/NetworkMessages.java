@@ -1,7 +1,9 @@
 package jiraiyah.librarian.inits;
 
+import jiraiyah.librarian.network.VillageIdicatorMessage;
 import jiraiyah.librarian.references.Reference;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.relauncher.Side;
 
 @SuppressWarnings("WeakerAccess")
 public class NetworkMessages
@@ -11,7 +13,7 @@ public class NetworkMessages
     public static void register()
     {
         network = new SimpleNetworkWrapper( Reference.MOD_ID );
-		//network.registerMessage( FactoryTabChanged.class, FactoryTabChanged.Packet.class, nextId(), Side.SERVER );
+		network.registerMessage( VillageIdicatorMessage.class, VillageIdicatorMessage.Packet.class, nextId(), Side.CLIENT );
     }
 
     private static int ID = 0;

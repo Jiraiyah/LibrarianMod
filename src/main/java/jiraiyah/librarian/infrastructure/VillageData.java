@@ -1,23 +1,22 @@
 package jiraiyah.librarian.infrastructure;
 
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.village.VillageDoorInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class VillageData
 {
-    public int radiusList;
+    public int radius;
     public BlockPos center;
-    public List<VillageDoorInfo> doorInfos = new ArrayList<>();
+    public List<BlockPos> doorPositions = new ArrayList<>();
 
 
 
-    public VillageData(int radiusList, BlockPos centerList, List<VillageDoorInfo> doorInfos)
+    public VillageData(int radiusList, BlockPos centerList, List<BlockPos> doorPositions)
     {
-        this.radiusList = radiusList;
+        this.radius = radiusList;
         this.center = centerList;
-        this.doorInfos = doorInfos;
+        this.doorPositions = doorPositions;
     }
 }
