@@ -2,7 +2,6 @@ package jiraiyah.librarian.network;
 
 import io.netty.buffer.ByteBuf;
 import jiraiyah.librarian.infrastructure.VillageData;
-import jiraiyah.librarian.inits.NetworkMessages;
 import jiraiyah.librarian.tileEntities.VillageIndicatorTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
@@ -30,7 +29,8 @@ public class VillageIdicatorMessage implements IMessageHandler<VillageIdicatorMe
     public static void sendMessage(List<VillageData> data)
     {
         Packet packet = new Packet(data);
-        NetworkMessages.network.sendToServer( packet );
+        //TODO : See how to find the clients connected to this server to send the message to, alternatively, see if using nbt on te would eliminate this need
+        //NetworkMessages.network.sendTo( packet , );
     }
 
     @SuppressWarnings("WeakerAccess")

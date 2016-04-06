@@ -3,9 +3,6 @@ package jiraiyah.librarian.tileEntities;
 import jiraiyah.librarian.infrastructure.VillageData;
 import jiraiyah.librarian.network.VillageIdicatorMessage;
 import jiraiyah.librarian.utilities.Log;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
@@ -15,9 +12,6 @@ import net.minecraft.village.VillageDoorInfo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-
-import static org.lwjgl.opengl.GL11.*;
 
 public class VillageIndicatorTile extends TileEntity implements ITickable
 {
@@ -43,7 +37,9 @@ public class VillageIndicatorTile extends TileEntity implements ITickable
         }
         if (!getWorld().isRemote)
             return;
-        drawVillageInfo();
+        Log.info("==================================> " + villageDataList.size());
+
+        //drawVillageInfo();
     }
 
     private void resetVillageDataList()
@@ -77,8 +73,10 @@ public class VillageIndicatorTile extends TileEntity implements ITickable
 
     private void drawVillageInfo()
     {
-        Log.info("==================================> " + villageDataList.size());
-        for(VillageData data : villageDataList)
+
+
+        //TODO : Move the stuff bellow to a tesr
+        /*for(VillageData data : villageDataList)
         {
             //TODO : Draw the village info
             Random random = new Random();
@@ -96,7 +94,7 @@ public class VillageIndicatorTile extends TileEntity implements ITickable
             Tessellator.getInstance().draw();
             buffer.putColorRGB_F4(rand, rand, rand);
             glTranslatef(-data.center.getX(), -data.center.getY(), -data.center.getZ());
-        }
+        }*/
     }
 
     public void UpdateDataFromServer(List<VillageData> data)
