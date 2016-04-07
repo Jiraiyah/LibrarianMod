@@ -5,13 +5,12 @@ import jiraiyah.librarian.infrastructure.VillageData;
 import jiraiyah.librarian.inits.NetworkMessages;
 import jiraiyah.librarian.tileEntities.VillageIndicatorTile;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,16 +22,23 @@ public class VillageIdicatorMessage implements IMessageHandler<VillageIdicatorMe
     public IMessage onMessage ( VillageIdicatorMessage.Packet message, MessageContext ctx )
     {
         Minecraft.getMinecraft().addScheduledTask( () ->
-                ((VillageIndicatorTile)Minecraft.getMinecraft().theWorld.getTileEntity(message.entityPos)).UpdateDataFromServer(message.data));
+                ((VillageIndicatorTile)Minecraft
+                        .getMinecraft()
+                        .theWorld
+                        .getTileEntity(message.entityPos))
+                        .UpdateDataFromServer(message.data));
         return null;
     }
 
-    @SideOnly( Side.CLIENT)
-    public static void sendMessage(BlockPos pos, List<VillageData> data)
+    public static void sendMessage(MinecraftServer minecraftServer, List<VillageData> data, BlockPos pos)
     {
-        Packet packet = new Packet(data);
-        //TODO : See how to find the clients connected to this server to send the message to, alternatively, see if using nbt on te would eliminate this need
-        NetworkMessages.network.sendToAllAround(packet, new NetworkRegistry.TargetPoint(0, pos.getX(), pos.getY(),pos.getZ(), 100));
+        Packet packet = new Packet(data, pos);
+        for (EntityPlayerMP player : minecraftServer.getPlayerList().getPlayerList())
+        {
+            BlockPos playerPosition = player.getPosition();
+            if (pos.distanceSq(playerPosition) < 100 * 100)
+                    NetworkMessages.network.sendTo(packet, player);
+        }
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -46,9 +52,10 @@ public class VillageIdicatorMessage implements IMessageHandler<VillageIdicatorMe
 
         }
 
-        public Packet(List<VillageData> data)
+        public Packet(List<VillageData> data, BlockPos entityPos)
         {
             this.data = data;
+            this.entityPos = entityPos;
         }
 
         @Override
@@ -60,11 +67,12 @@ public class VillageIdicatorMessage implements IMessageHandler<VillageIdicatorMe
             for (int i = 0; i < dataSize; i++)
             {
                 int radius = buf.readInt();
-                BlockPos center = BlockPos.fromLong(buf.readInt());
+                BlockPos center = BlockPos.fromLong(buf.readLong());
                 int doorListSize = buf.readInt();
                 List<BlockPos> doorPositions = new ArrayList<>();
-                for (int j = 0; j < doorListSize; j++)
-                    doorPositions.add(BlockPos.fromLong(buf.readLong()));
+                if (doorListSize != 0)
+                    for (int j = 0; j < doorListSize; j++)
+                        doorPositions.add(BlockPos.fromLong(buf.readLong()));
                 VillageData vData = new VillageData(radius, center,doorPositions);
                 data.add(vData);
             }

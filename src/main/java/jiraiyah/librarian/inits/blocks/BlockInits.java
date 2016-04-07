@@ -2,6 +2,7 @@ package jiraiyah.librarian.inits.blocks;
 
 import jiraiyah.librarian.blocks.ChunkLoader;
 import jiraiyah.librarian.blocks.VillageIndicator;
+import jiraiyah.librarian.utilities.Log;
 import net.minecraft.block.Block;
 
 import java.util.ArrayList;
@@ -22,5 +23,6 @@ public class BlockInits
 
         BLOCK_LIST.add(CHUNK_LOADER);
         BLOCK_LIST.add(VILLAGE_INDICATOR);
+        Log.info("=========================================================> Initialized Blocks");
     }
 }

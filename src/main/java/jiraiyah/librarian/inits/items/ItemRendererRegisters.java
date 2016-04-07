@@ -1,5 +1,6 @@
 package jiraiyah.librarian.inits.items;
 
+import jiraiyah.librarian.utilities.Log;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
@@ -8,11 +9,11 @@ public class ItemRendererRegisters
 {
     public static void register()
     {
-        if (ItemInits.ITEM_LIST.size() == 0)
-            return;
-        for(Item item : ItemInits.ITEM_LIST)
-            if (item != null)
-                registerItem(item);
+        if (ItemInits.ITEM_LIST.size() > 0)
+            for(Item item : ItemInits.ITEM_LIST)
+                if (item != null)
+                    registerItem(item);
+        Log.info("=========================================================> Registered Item Renderers");
     }
 
     private static void registerItem(Item item)

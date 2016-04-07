@@ -83,7 +83,8 @@ public class ChunkLoader extends Block
     @Override
     public boolean isSideSolid(IBlockState base_state, IBlockAccess world, BlockPos pos, EnumFacing side)
     {
-        return side == EnumFacing.DOWN;
+        return true;
+        //return side == EnumFacing.DOWN;
     }
 
     @Override
@@ -95,13 +96,11 @@ public class ChunkLoader extends Block
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        if(playerIn.isSneaking())
-            return false;
-        if (!worldIn.isRemote)
+        if (worldIn.isRemote && playerIn.isSneaking())
         {
-            // TODO : add code
+            // TODO : add code if we want to load more than single chunk per block
         }
-        return true;
+        return false;
     }
 
     @Override

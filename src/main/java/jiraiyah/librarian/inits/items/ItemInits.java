@@ -1,6 +1,7 @@
 package jiraiyah.librarian.inits.items;
 
 import jiraiyah.librarian.items.LivingCage;
+import jiraiyah.librarian.utilities.Log;
 import net.minecraft.item.Item;
 
 import java.util.ArrayList;
@@ -18,5 +19,6 @@ public class ItemInits
         LIVING_CAGE = new LivingCage();
 
         ITEM_LIST.add(LIVING_CAGE);
+        Log.info("=========================================================> Initialized Items");
     }
 }
