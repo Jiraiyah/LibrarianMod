@@ -19,7 +19,9 @@ public class VillageDataCollector
     @SubscribeEvent
     public void serverTickEvent(TickEvent.ServerTickEvent event)
     {
-
+        if (PLAYERS == null || PLAYERS.size() == 0)
+            return;
+        //TODO : for each player, collect the data, if they are changed, send it to their client
     }
 
     public void playerLogoutEvent(PlayerEvent.PlayerLoggedOutEvent event)
