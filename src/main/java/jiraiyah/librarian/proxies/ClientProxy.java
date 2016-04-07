@@ -1,5 +1,6 @@
 package jiraiyah.librarian.proxies;
 
+import jiraiyah.librarian.inits.KeyBindings;
 import jiraiyah.librarian.inits.blocks.BlockRendererRegisters;
 import jiraiyah.librarian.inits.events.ClientEventRegister;
 import jiraiyah.librarian.inits.items.ItemRendererRegisters;
@@ -24,7 +25,7 @@ public class ClientProxy extends CommonProxy
     public void init(FMLInitializationEvent event)
     {
         super.init(event);
-
+        KeyBindings.register();
         TileEntitiesRendererRegister.register();
     }
 
