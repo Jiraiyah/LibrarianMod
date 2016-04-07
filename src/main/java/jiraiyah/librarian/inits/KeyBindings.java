@@ -7,6 +7,10 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.lwjgl.input.Keyboard;
 
 //http://minecraft.gamepedia.com/Key_codes
+// for config :
+//https://github.com/maruohon/itemscroller/blob/master/src/main/java/fi/dy/masa/itemscroller/config/Configs.java
+// onConfigChangedEvent <-- client side
+//https://github.com/maruohon/itemscroller/blob/master/src/main/java/fi/dy/masa/itemscroller/ItemScroller.java#L32
 public class KeyBindings
 {
     public static KeyBinding VILLAGE_DATA;

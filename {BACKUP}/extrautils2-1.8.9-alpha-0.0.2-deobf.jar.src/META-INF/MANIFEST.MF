@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+FMLCorePluginContainsFMLMod: true
+FMLAT: extrautils2_at.cfg
+FMLCorePlugin: com.rwtema.extrautils2.asm.CoreXU2
+
