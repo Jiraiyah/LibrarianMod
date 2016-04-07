@@ -25,7 +25,7 @@ public class VillageDataHandler
             showVillages = true;
             //TODO : send packet from client to server, add this player to the list, and request for information
         }
-        else if (KeyBindings.VILLAGE_DATA.isPressed() && !showVillages)
+        else if (KeyBindings.VILLAGE_DATA.isPressed() && showVillages)
         {
             showVillages = false;
             //TODO : send packet from client to server, remove this player from the list

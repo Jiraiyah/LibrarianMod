@@ -6,6 +6,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.lwjgl.input.Keyboard;
 
+//http://minecraft.gamepedia.com/Key_codes
 public class KeyBindings
 {
     public static KeyBinding VILLAGE_DATA;
