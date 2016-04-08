@@ -1,19 +1,19 @@
 package jiraiyah.librarian.network;
 
 import io.netty.buffer.ByteBuf;
+import jiraiyah.librarian.events.VillageDataHandler;
 import jiraiyah.librarian.infrastructure.VillageData;
 import jiraiyah.librarian.inits.NetworkMessages;
-import jiraiyah.librarian.tileEntities.VillageIndicatorTile;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @SuppressWarnings("unused")
 public class VillageIdicatorMessage implements IMessageHandler<VillageIdicatorMessage.Packet, IMessage>
@@ -21,16 +21,17 @@ public class VillageIdicatorMessage implements IMessageHandler<VillageIdicatorMe
     @Override
     public IMessage onMessage ( VillageIdicatorMessage.Packet message, MessageContext ctx )
     {
-        Minecraft.getMinecraft().addScheduledTask( () ->
+        /*Minecraft.getMinecraft().addScheduledTask( () ->
                 ((VillageIndicatorTile)Minecraft
                         .getMinecraft()
                         .theWorld
                         .getTileEntity(message.entityPos))
-                        .UpdateDataFromServer(message.data));
+                        .UpdateDataFromServer(message.data));*/
+        VillageDataHandler.setVillageData(message.data);
         return null;
     }
 
-    public static void sendMessage(MinecraftServer minecraftServer, List<VillageData> data, BlockPos pos)
+    /*public static void sendMessage(MinecraftServer minecraftServer, List<VillageData> data, BlockPos pos)
     {
         Packet packet = new Packet(data, pos);
         for (EntityPlayerMP player : minecraftServer.getPlayerList().getPlayerList())
@@ -39,30 +40,34 @@ public class VillageIdicatorMessage implements IMessageHandler<VillageIdicatorMe
             if (pos.distanceSq(playerPosition) < 100 * 100)
                     NetworkMessages.network.sendTo(packet, player);
         }
+    }*/
+
+    public static void sendMessage(UUID player, List<VillageData> data)
+    {
+        Packet packet = new Packet(data);
+        EntityPlayerMP playerMP = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(player);
+        NetworkMessages.network.sendTo(packet, playerMP);
     }
 
     @SuppressWarnings("WeakerAccess")
     public static class Packet implements IMessage
     {
         public List<VillageData> data = new ArrayList<>();
-        public BlockPos entityPos;
 
         public Packet()
         {
 
         }
 
-        public Packet(List<VillageData> data, BlockPos entityPos)
+        public Packet(List<VillageData> data)
         {
             this.data = data;
-            this.entityPos = entityPos;
         }
 
         @Override
         public void fromBytes(ByteBuf buf)
         {
             int dataSize = buf.readInt();
-            entityPos = BlockPos.fromLong(buf.readLong());
             data = new ArrayList<>();
             for (int i = 0; i < dataSize; i++)
             {
@@ -82,7 +87,6 @@ public class VillageIdicatorMessage implements IMessageHandler<VillageIdicatorMe
         public void toBytes(ByteBuf buf)
         {
             buf.writeInt( data.size() );
-            buf.writeLong(entityPos.toLong());
             for (VillageData vData : data)
             {
                 buf.writeInt( vData.radius );

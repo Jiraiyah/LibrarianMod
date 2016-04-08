@@ -1,6 +1,7 @@
 package jiraiyah.librarian.inits;
 
 import jiraiyah.librarian.network.VillageIdicatorMessage;
+import jiraiyah.librarian.network.VillageInfoPlayerMessage;
 import jiraiyah.librarian.references.Reference;
 import jiraiyah.librarian.utilities.Log;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -16,6 +17,7 @@ public class NetworkMessages
     {
         network = new SimpleNetworkWrapper( Reference.MOD_ID );
 		network.registerMessage( VillageIdicatorMessage.class, VillageIdicatorMessage.Packet.class, nextId(), Side.CLIENT );
+        network.registerMessage( VillageInfoPlayerMessage.class, VillageInfoPlayerMessage.Packet.class, nextId(), Side.SERVER );
         Log.info("=========================================================> Registered Network Messages");
     }
 

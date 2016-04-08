@@ -1,18 +1,12 @@
 package jiraiyah.librarian.tileEntities;
 
 import jiraiyah.librarian.infrastructure.VillageData;
-import jiraiyah.librarian.network.VillageIdicatorMessage;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.village.Village;
-import net.minecraft.village.VillageCollection;
-import net.minecraft.village.VillageDoorInfo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class VillageIndicatorTile extends TileEntity implements ITickable
 {
@@ -45,7 +39,7 @@ public class VillageIndicatorTile extends TileEntity implements ITickable
 
     private void resetVillageDataList()
     {
-        float psx = pos.getX();
+        /*float psx = pos.getX();
         float psz = pos.getZ();
         VillageCollection villageCollection = getWorld().getVillageCollection();
         if (villageCollection == null)
@@ -67,7 +61,7 @@ public class VillageIndicatorTile extends TileEntity implements ITickable
                     villageDataList.add(new VillageData(radius, center, doorPositions));
                 });
         if (!worldObj.isRemote)
-            VillageIdicatorMessage.sendMessage(worldObj.getMinecraftServer(), villageDataList, getPos());
+            VillageIdicatorMessage.sendMessage(worldObj.getMinecraftServer(), villageDataList, getPos());*/
     }
 
     @Override
