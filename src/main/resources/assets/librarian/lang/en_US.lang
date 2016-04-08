@@ -2,3 +2,6 @@ tile.librarian.chunkloader.name=Chunk Loader
 tile.librarian.villageindicator.name=Village Indicator
 
 item.librarian.livingcage.name=Living Cage
+
+librarian.key.villagedata=Village Data
+librarian.key.categories=Librarian

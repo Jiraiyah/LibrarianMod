@@ -8,7 +8,7 @@ public class ClientEventRegister
 {
     public static void register()
     {
-        MinecraftForge.EVENT_BUS.register(VillageDataHandler.class);
+        MinecraftForge.EVENT_BUS.register(new VillageDataHandler());
         Log.info("=========================================================> Registered Client Events");
     }
 }

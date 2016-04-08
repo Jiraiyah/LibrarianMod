@@ -17,7 +17,7 @@ public class KeyBindings
 
     public static void register()
     {
-        VILLAGE_DATA = new KeyBinding("key.villagedata", Keyboard.KEY_V, "key.categories." + Reference.MOD_ID.toLowerCase());
+        VILLAGE_DATA = new KeyBinding(Reference.MOD_ID.toLowerCase() + ".key.villagedata", Keyboard.KEY_V, Reference.MOD_ID.toLowerCase() + ".key.categories");
 
         ClientRegistry.registerKeyBinding(VILLAGE_DATA);
 

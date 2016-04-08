@@ -2,14 +2,13 @@ package jiraiyah.librarian.events;
 
 import jiraiyah.librarian.infrastructure.VillageData;
 import jiraiyah.librarian.network.VillageIdicatorMessage;
-import jiraiyah.librarian.utilities.Log;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.village.Village;
 import net.minecraft.village.VillageCollection;
 import net.minecraft.village.VillageDoorInfo;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -27,7 +26,7 @@ public class VillageDataCollector
     private static final int RESET_TIMER_TICKS = 120;
     private int resetCoolDown;
     //public List<VillageData> villageDataList = new ArrayList<>();
-    public Map<UUID, List<VillageData>> villageDataList = new HashMap<>();
+    public static Map<UUID, List<VillageData>> villageDataList = new HashMap<>();
 
     @SubscribeEvent
     public void serverTickEvent(TickEvent.ServerTickEvent event)
@@ -38,7 +37,6 @@ public class VillageDataCollector
         resetCoolDown = RESET_TIMER_TICKS;
         if (PLAYERS == null || PLAYERS.size() == 0)
             return;
-        Log.info("---------------Server reset village data-------------->");
         resetVillageDataList();
         //TODO : for each player, collect the data, if they are changed, send it to their client
     }
@@ -50,21 +48,25 @@ public class VillageDataCollector
 
     public static void addPlayerToList(UUID player)
     {
-        Log.info("---------------Adding Player to server list-------------->");
         if (!PLAYERS.contains(player))
+        {
             PLAYERS.add(player);
+        }
     }
 
     public static void removePlayerFromList(UUID player)
     {
-        Log.info("---------------Removing player from srver list-------------->");
         if (PLAYERS.contains(player))
+        {
             PLAYERS.remove(player);
+            if (villageDataList.containsKey(player))
+                villageDataList.remove(player);
+        }
     }
 
     private void resetVillageDataList()
     {
-        World world = Minecraft.getMinecraft().theWorld;
+        World world = FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld(); //Minecraft.getMinecraft().theWorld;
         VillageCollection villageCollection = world.getVillageCollection();
         if (villageCollection == null)
             return;
@@ -79,12 +81,11 @@ public class VillageDataCollector
             float psx = entityPlayer.getPosition().getX();
             float psz = entityPlayer.getPosition().getZ();
             allVillages.stream()
-                    .filter(v -> (psx < v.getCenter().getX() + v.getVillageRadius() &&
-                            psz < v.getCenter().getZ() + v.getVillageRadius()) &&
-                            (psx > v.getCenter().getX() - v.getVillageRadius() &&
-                                    psz > v.getCenter().getZ() - v.getVillageRadius()))
+                    .filter(v -> psx < v.getCenter().getX() + v.getVillageRadius() + 200 &&
+                                 psz < v.getCenter().getZ() + v.getVillageRadius() + 200 &&
+                                 psx > v.getCenter().getX() - v.getVillageRadius() - 200 &&
+                                 psz > v.getCenter().getZ() - v.getVillageRadius() - 200)
                     .forEach(v -> {
-
                         int radius = v.getVillageRadius();
                         BlockPos center = v.getCenter();
                         List<VillageDoorInfo> doorInfos = v.getVillageDoorInfoList();
@@ -97,5 +98,6 @@ public class VillageDataCollector
                 villageDataList.replace(player, tempList);
             VillageIdicatorMessage.sendMessage(player, tempList);
         }
+
     }
 }

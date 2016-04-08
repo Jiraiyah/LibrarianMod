@@ -17,7 +17,7 @@ public class VillageInfoPlayerMessage implements IMessageHandler<VillageInfoPlay
     {
         if (message.adding)
             VillageDataCollector.addPlayerToList(message.playerId);
-        else
+        else if(!message.adding)
             VillageDataCollector.removePlayerFromList(message.playerId);
         return null;
     }

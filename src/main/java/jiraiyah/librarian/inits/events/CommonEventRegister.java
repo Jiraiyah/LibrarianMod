@@ -10,7 +10,7 @@ public class CommonEventRegister
 
     public static void register()
     {
-        MinecraftForge.EVENT_BUS.register(VillageDataCollector.class);
+        MinecraftForge.EVENT_BUS.register(new VillageDataCollector());
         Log.info("=========================================================> Registered Common Events");
     }
 }

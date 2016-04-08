@@ -39,29 +39,7 @@ public class VillageIndicatorTile extends TileEntity implements ITickable
 
     private void resetVillageDataList()
     {
-        /*float psx = pos.getX();
-        float psz = pos.getZ();
-        VillageCollection villageCollection = getWorld().getVillageCollection();
-        if (villageCollection == null)
-            return;
-        List<Village> allVillages = villageCollection.getVillageList();
-        if (allVillages == null || allVillages.size() == 0)
-            return;
-        villageDataList.clear();
-        allVillages.stream()
-                .filter(v -> (psx < v.getCenter().getX() + v.getVillageRadius() &&
-                        psz < v.getCenter().getZ() + v.getVillageRadius()) &&
-                        (psx > v.getCenter().getX() - v.getVillageRadius() &&
-                                psz > v.getCenter().getZ() - v.getVillageRadius()))
-                .forEach(v -> {
-                    int radius = v.getVillageRadius();
-                    BlockPos center = v.getCenter();
-                    List<VillageDoorInfo> doorInfos = v.getVillageDoorInfoList();
-                    List<BlockPos> doorPositions = doorInfos.stream().map(VillageDoorInfo::getDoorBlockPos).collect(Collectors.toList());
-                    villageDataList.add(new VillageData(radius, center, doorPositions));
-                });
-        if (!worldObj.isRemote)
-            VillageIdicatorMessage.sendMessage(worldObj.getMinecraftServer(), villageDataList, getPos());*/
+
     }
 
     @Override
