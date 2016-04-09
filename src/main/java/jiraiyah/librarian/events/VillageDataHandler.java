@@ -3,7 +3,6 @@ package jiraiyah.librarian.events;
 import jiraiyah.librarian.infrastructure.VillageData;
 import jiraiyah.librarian.inits.KeyBindings;
 import jiraiyah.librarian.network.VillageInfoPlayerMessage;
-import jiraiyah.librarian.utilities.Log;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
@@ -13,6 +12,8 @@ import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -23,13 +24,19 @@ import javax.vecmath.Vector4f;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.lwjgl.opengl.GL11.GL_LINES;
-import static org.lwjgl.opengl.GL11.GL_LINE_LOOP;
-import static org.lwjgl.opengl.GL11.GL_LINE_STRIP;
+import static org.lwjgl.opengl.GL11.*;
 
 public class VillageDataHandler
 {
     private boolean showVillages;
+    private boolean showVillagesDoors = true;
+    private boolean showVillagesBorder;
+    private boolean showVillagesSpehere;
+    private boolean showVillagesCenter;
+    private boolean showVillagesInfo;
+    private boolean showVillagesGolem = true;
+
+
     public static List<VillageData> villageDataList = new ArrayList<>();
 
     private static final float PI = (float) Math.PI;
@@ -46,9 +53,19 @@ public class VillageDataHandler
         double plX = player.lastTickPosX + ((player.posX - player.lastTickPosX) * ticks);
         double plY = player.lastTickPosY + ((player.posY - player.lastTickPosY) * ticks);
         double plZ = player.lastTickPosZ + ((player.posZ - player.lastTickPosZ) * ticks);
+        Vec3d playerPos = new Vec3d(plX, plY, plZ);
+        RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
+        FontRenderer fontrenderer = renderManager.getFontRenderer();
         for (VillageData data : villageDataList)
         {
-
+            double distance = Math.sqrt(playerPos.squareDistanceTo(data.center.getX(), data.center.getY(), data.center.getZ()));
+            double scaleFactor = -0.0062f * distance / 4.209f;
+            //double v1 = 1.6f * distance / 4.209f;
+            double v1 = 1.45f * distance / 4.209f;
+            double v2 = 1.3f * distance / 4.209f;
+            double v3 = 1.15f * distance / 4.209f;
+            double v4 = distance / 4.209f;
+            //Log.info("=================== Distance = " + distance); //17.723549165908132
             GlStateManager.pushMatrix();
             {
                 GlStateManager.translate(-0.5f + data.center.getX() - plX,//x - 0.5f + data.center.getX() - pos.getX(),
@@ -61,20 +78,45 @@ public class VillageDataHandler
                 GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
                 {
                     // region DRAW BORDER SPHERE
-                    drawBorderSpehere(data.radius, buffer, new Vector4f(1f, 0f, 1f, 1f));
+                    if (showVillagesSpehere)
+                        drawBorderSpehere(data.radius, buffer, new Vector4f(1f, 0f, 1f, 1f));
                     // endregion
                     // region DRAW DOORS
-                    drawDoors(data.center, data.doorPositions, buffer, new Vector4f(1f, 1f, 1f, 1f));
+                    if (showVillagesDoors)
+                        drawDoors(data.center, data.doorPositions, buffer, new Vector4f(1f, 1f, 1f, 1f));
                     // endregion
                     // region DRAW BORDER SQUARE
-                    drawBorderSquare(data.radius, buffer, new Vector4f(1f, 1f, 0f, 0.5f));
+                    if (showVillagesBorder)
+                        drawBorderSquare(data.radius, buffer, new Vector4f(1f, 1f, 0f, 0.5f));
                     // endregion
                     // region DRAW GOLEM SPAWN
-                    drawGolemSpawn(buffer, new Vector4f(0f, 1f, 0f, 1f));
+                    if (showVillagesGolem)
+                        drawGolemSpawn(buffer, new Vector4f(0f, 1f, 0f, 1f));
                     // endregion
                     // region DRAW CENTER
-                    drawCenter(buffer, new Vector4f(1f, 0f, 0f, 1f));
+                    if (showVillagesCenter)
+                        drawCenter(buffer, new Vector4f(1f, 0f, 0f, 1f));
                     //endregion
+                    GlStateManager.popMatrix();
+                    if (showVillagesInfo)
+                    {
+                        GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
+                        /*Vector3d center = new Vector3d(-0.5f + data.center.getX() - plX,
+                                -0.5f + data.center.getY() - plY + v1,
+                                -0.5f + data.center.getZ() - plZ);*/
+                        GlStateManager.rotate(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
+                        GlStateManager.rotate((float) (renderManager.options.thirdPersonView == 2 ? -1 : 1) * renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
+
+                        GlStateManager.enableBlend();
+                        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+                        GlStateManager.enableTexture2D();
+                        drawTextInfo("Villagers : " + data.villagerCount, v1, scaleFactor, fontrenderer);
+                        drawTextInfo("Doors : " + data.doorPositions.size(), v2, scaleFactor, fontrenderer);
+                        boolean canSpaw = data.doorPositions.size() > 20;
+                        drawTextInfo((canSpaw ? TextFormatting.GREEN : TextFormatting.DARK_RED) + "Max Golem : " + (canSpaw ? data.villagerCount / 10 : "-"), v3, scaleFactor, fontrenderer);
+                        drawTextInfo("Reputation : " + data.reputation, v4, scaleFactor, fontrenderer);
+                        GlStateManager.disableBlend();
+                    }
                 }
                 GlStateManager.glLineWidth(1);
                 GlStateManager.disableBlend();
@@ -83,118 +125,16 @@ public class VillageDataHandler
                 GlStateManager.enableLighting();
             }
             GlStateManager.popMatrix();
-
-            GlStateManager.pushMatrix();
-            {
-                GlStateManager.translate(-0.5f + data.center.getX() - plX,//x - 0.5f + data.center.getX() - pos.getX(),
-                        -0.5f + data.center.getY() - plY + 2,//y - 0.5f + data.center.getY() - pos.getY(),
-                        -0.5f + data.center.getZ() - plZ);//z - 0.5f + data.center.getZ() - pos.getZ());
-                GlStateManager.disableLighting();
-                GlStateManager.disableTexture2D();
-                GlStateManager.disableDepth();
-                {
-                    GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
-                    RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
-                    GlStateManager.rotate(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-                    GlStateManager.rotate((float) (renderManager.options.thirdPersonView == 2 ? -1 : 1) * renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
-                    GlStateManager.scale(-0.025F, -0.025F, 0.025F);
-                    GlStateManager.enableBlend();
-                    GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-                    FontRenderer fontrenderer = renderManager.getFontRenderer();
-                    String str = "Villagers : 5";
-                    int j = fontrenderer.getStringWidth(str) / 2;
-                    buffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-                    int i = str.equals("deadmau5") ? -10 : 0;
-                    buffer.pos((double) (-j - 1), (double) (-1 + i), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-                    buffer.pos((double) (-j - 1), (double) (8 + i), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-                    buffer.pos((double) (j + 1), (double) (8 + i), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-                    buffer.pos((double) (j + 1), (double) (-1 + i), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-                    Tessellator.getInstance().draw();
-                    GlStateManager.enableTexture2D();
-                    fontrenderer.drawString(str, -fontrenderer.getStringWidth(str) / 2, i, -1);
-                    GlStateManager.disableBlend();
-                }
-                GlStateManager.glLineWidth(1);
-                GlStateManager.enableDepth();
-                GlStateManager.enableTexture2D();
-                GlStateManager.enableLighting();
-            }
-            GlStateManager.popMatrix();
-
-            GlStateManager.pushMatrix();
-            {
-                GlStateManager.translate(-0.5f + data.center.getX() - plX,//x - 0.5f + data.center.getX() - pos.getX(),
-                        -0.5f + data.center.getY() - plY + 1.5,//y - 0.5f + data.center.getY() - pos.getY(),
-                        -0.5f + data.center.getZ() - plZ);//z - 0.5f + data.center.getZ() - pos.getZ());
-                GlStateManager.disableLighting();
-                GlStateManager.disableTexture2D();
-                GlStateManager.disableDepth();
-                {
-                    GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
-                    RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
-                    GlStateManager.rotate(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-                    GlStateManager.rotate((float) (renderManager.options.thirdPersonView == 2 ? -1 : 1) * renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
-                    GlStateManager.scale(-0.025F, -0.025F, 0.025F);
-                    GlStateManager.enableBlend();
-                    GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-                    FontRenderer fontrenderer = renderManager.getFontRenderer();
-                    String str = "Doors : 19";
-                    int j = fontrenderer.getStringWidth(str) / 2;
-                    buffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-                    int i = str.equals("deadmau5") ? -10 : 0;
-                    buffer.pos((double) (-j - 1), (double) (-1 + i), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-                    buffer.pos((double) (-j - 1), (double) (8 + i), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-                    buffer.pos((double) (j + 1), (double) (8 + i), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-                    buffer.pos((double) (j + 1), (double) (-1 + i), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-                    Tessellator.getInstance().draw();
-                    GlStateManager.enableTexture2D();
-                    fontrenderer.drawString(str, -fontrenderer.getStringWidth(str) / 2, i, -1);
-                    GlStateManager.disableBlend();
-                }
-                GlStateManager.glLineWidth(1);
-                GlStateManager.enableDepth();
-                GlStateManager.enableTexture2D();
-                GlStateManager.enableLighting();
-            }
-            GlStateManager.popMatrix();
-
-            GlStateManager.pushMatrix();
-            {
-                GlStateManager.translate(-0.5f + data.center.getX() - plX,//x - 0.5f + data.center.getX() - pos.getX(),
-                        -0.5f + data.center.getY() - plY + 1,//y - 0.5f + data.center.getY() - pos.getY(),
-                        -0.5f + data.center.getZ() - plZ);//z - 0.5f + data.center.getZ() - pos.getZ());
-                GlStateManager.disableLighting();
-                GlStateManager.disableTexture2D();
-                GlStateManager.disableDepth();
-                {
-                    GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
-                    RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
-                    GlStateManager.rotate(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-                    GlStateManager.rotate((float) (renderManager.options.thirdPersonView == 2 ? -1 : 1) * renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
-                    GlStateManager.scale(-0.025F, -0.025F, 0.025F);
-                    GlStateManager.enableBlend();
-                    GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-                    FontRenderer fontrenderer = renderManager.getFontRenderer();
-                    String str = "Golems : Yes";
-                    int j = fontrenderer.getStringWidth(str) / 2;
-                    buffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-                    buffer.pos((double) (-j - 1), (double) (-1), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-                    buffer.pos((double) (-j - 1), (double) (8), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-                    buffer.pos((double) (j + 1), (double) (8), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-                    buffer.pos((double) (j + 1), (double) (-1), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-                    Tessellator.getInstance().draw();
-                    GlStateManager.enableTexture2D();
-                    fontrenderer.drawString(str, -fontrenderer.getStringWidth(str) / 2, 0, -1);
-                    GlStateManager.disableBlend();
-                }
-                GlStateManager.glLineWidth(1);
-                GlStateManager.enableDepth();
-                GlStateManager.enableTexture2D();
-                GlStateManager.enableLighting();
-            }
-            GlStateManager.popMatrix();
         }
+    }
 
+    private void drawTextInfo(String text, double offset, double scaleFactor, FontRenderer fontrenderer)
+    {
+        GlStateManager.translate(0, offset, 0);
+        GlStateManager.scale(scaleFactor, scaleFactor, -scaleFactor);
+        fontrenderer.drawString(text, -fontrenderer.getStringWidth(text) / 2, 0, -1);
+        GlStateManager.scale(1f/scaleFactor, 1f/scaleFactor, -1f/scaleFactor);
+        GlStateManager.translate(0, -offset, 0);
     }
 
     private void drawCenter(VertexBuffer buffer, Vector4f color)
@@ -280,7 +220,7 @@ public class VillageDataHandler
     private void drawBorderSpehere(int radius, VertexBuffer buffer, Vector4f color)
     {
         GlStateManager.glLineWidth(1);
-        int space = 10;
+        int space = 5;
         int upper = 90;
         int upper2 = 360 - space;
         double x, y, z;
@@ -335,13 +275,27 @@ public class VillageDataHandler
         {
             showVillages = !showVillages;
             VillageInfoPlayerMessage.sendMessage(Minecraft.getMinecraft().thePlayer.getUniqueID(), showVillages);
+            //Log.info("=================> Village toggle data key pressed");
         }
+        if (KeyBindings.VILLAGE_DATA_BORDER.isPressed())
+            showVillagesBorder = !showVillagesBorder;
+        if (KeyBindings.VILLAGE_DATA_DOORS.isPressed())
+            showVillagesDoors = !showVillagesDoors;
+        if (KeyBindings.VILLAGE_DATA_SPHERE.isPressed())
+            showVillagesSpehere = !showVillagesSpehere;
+        if (KeyBindings.VILLAGE_DATA_GOLEM.isPressed())
+            showVillagesGolem = !showVillagesGolem;
+        if (KeyBindings.VILLAGE_DATA_INFO.isPressed())
+            showVillagesInfo = !showVillagesInfo;
+        if (KeyBindings.VILLAGE_DATA_CENTER.isPressed())
+            showVillagesCenter = !showVillagesCenter;
+
     }
 
     public static void setVillageData(List<VillageData> data)
     {
         villageDataList = data;
-        Log.info("------------Client received village data-----------------> " + villageDataList.size());
+        //Log.info("------------Client received village data-----------------> " + villageDataList.size());
     }
 
 }

@@ -71,6 +71,8 @@ public class VillageIdicatorMessage implements IMessageHandler<VillageIdicatorMe
             data = new ArrayList<>();
             for (int i = 0; i < dataSize; i++)
             {
+                int villagerCount = buf.readInt();
+                int reputation = buf.readInt();
                 int radius = buf.readInt();
                 BlockPos center = BlockPos.fromLong(buf.readLong());
                 int doorListSize = buf.readInt();
@@ -78,7 +80,7 @@ public class VillageIdicatorMessage implements IMessageHandler<VillageIdicatorMe
                 if (doorListSize != 0)
                     for (int j = 0; j < doorListSize; j++)
                         doorPositions.add(BlockPos.fromLong(buf.readLong()));
-                VillageData vData = new VillageData(radius, center,doorPositions);
+                VillageData vData = new VillageData(radius, center,doorPositions, villagerCount, reputation);
                 data.add(vData);
             }
         }
@@ -89,6 +91,8 @@ public class VillageIdicatorMessage implements IMessageHandler<VillageIdicatorMe
             buf.writeInt( data.size() );
             for (VillageData vData : data)
             {
+                buf.writeInt(vData.villagerCount);
+                buf.writeInt(vData.reputation);
                 buf.writeInt( vData.radius );
                 buf.writeLong(vData.center.toLong());
                 buf.writeInt( vData.doorPositions.size() );

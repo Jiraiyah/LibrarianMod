@@ -51,6 +51,7 @@ public class VillageDataCollector
         if (!PLAYERS.contains(player))
         {
             PLAYERS.add(player);
+            //Log.info("=================> Added a player to the list");
         }
     }
 
@@ -58,6 +59,7 @@ public class VillageDataCollector
     {
         if (PLAYERS.contains(player))
         {
+            //Log.info("=================> Removed a player from the list");
             PLAYERS.remove(player);
             if (villageDataList.containsKey(player))
                 villageDataList.remove(player);
@@ -87,16 +89,19 @@ public class VillageDataCollector
                                  psz > v.getCenter().getZ() - v.getVillageRadius() - 200)
                     .forEach(v -> {
                         int radius = v.getVillageRadius();
+                        int villagerCount = v.getNumVillagers();
+                        int reputation = v.getReputationForPlayer(entityPlayer.getName());
                         BlockPos center = v.getCenter();
                         List<VillageDoorInfo> doorInfos = v.getVillageDoorInfoList();
                         List<BlockPos> doorPositions = doorInfos.stream().map(VillageDoorInfo::getDoorBlockPos).collect(Collectors.toList());
-                        tempList.add(new VillageData(radius, center, doorPositions));
+                        tempList.add(new VillageData(radius, center, doorPositions, villagerCount, reputation));
                     });
             if (!villageDataList.containsKey(player))
                 villageDataList.put(player, tempList);
             else
                 villageDataList.replace(player, tempList);
             VillageIdicatorMessage.sendMessage(player, tempList);
+            //Log.info("=================> Sent village data to client");
         }
 
     }

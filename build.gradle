@@ -113,7 +113,7 @@ configurations
 dependencies
 {
 	//compile "mcp.mobius.waila:Waila:${waila_version}"
-	deobfCompile "mezz.jei:jei_${minecraft_version}:${jei_version}"
+	//deobfCompile "mezz.jei:jei_${minecraft_version}:${jei_version}"
 	//embed fileTree(dir: 'libs', include: '*-api.jar')
 }
 

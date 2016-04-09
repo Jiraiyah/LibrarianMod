@@ -4,4 +4,11 @@ tile.librarian.villageindicator.name=Village Indicator
 item.librarian.livingcage.name=Living Cage
 
 librarian.key.villagedata=Village Data
+librarian.key.villagedatadoors=Village Data Doors Graphic
+librarian.key.villagedatagolem=Village Data Golem Graphic
+librarian.key.villagedataborder=Village Data Border Graphic
+librarian.key.villagedatainfo=Village Data Info Test
+librarian.key.villagedatacenter=Village Data Center Graphic
+librarian.key.villagedatasphere=Village Data Sphere Graphic
+
 librarian.key.categories=Librarian
