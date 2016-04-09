@@ -59,62 +59,45 @@ public class VillageDataHandler
         for (VillageData data : villageDataList)
         {
             double distance = Math.sqrt(playerPos.squareDistanceTo(data.center.getX(), data.center.getY(), data.center.getZ()));
-            double scaleFactor = -0.0062f * distance / 4.209f;
-            //double v1 = 1.6f * distance / 4.209f;
-            double v1 = 1.45f * distance / 4.209f;
-            double v2 = 1.3f * distance / 4.209f;
-            double v3 = 1.15f * distance / 4.209f;
-            double v4 = distance / 4.209f;
+            double scaleFactor = -0.015f * distance / 4.209f;
             //Log.info("=================== Distance = " + distance); //17.723549165908132
             GlStateManager.pushMatrix();
             {
                 GlStateManager.translate(-0.5f + data.center.getX() - plX,//x - 0.5f + data.center.getX() - pos.getX(),
                         -0.5f + data.center.getY() - plY,//y - 0.5f + data.center.getY() - pos.getY(),
                         -0.5f + data.center.getZ() - plZ);//z - 0.5f + data.center.getZ() - pos.getZ());
+                GlStateManager.glLineWidth(1);
                 GlStateManager.disableLighting();
                 GlStateManager.disableTexture2D();
                 GlStateManager.disableDepth();
                 GlStateManager.enableBlend();
                 GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
                 {
-                    // region DRAW BORDER SPHERE
                     if (showVillagesSpehere)
                         drawBorderSpehere(data.radius, buffer, new Vector4f(1f, 0f, 1f, 1f));
-                    // endregion
-                    // region DRAW DOORS
                     if (showVillagesDoors)
                         drawDoors(data.center, data.doorPositions, buffer, new Vector4f(1f, 1f, 1f, 1f));
-                    // endregion
-                    // region DRAW BORDER SQUARE
                     if (showVillagesBorder)
                         drawBorderSquare(data.radius, buffer, new Vector4f(1f, 1f, 0f, 0.5f));
-                    // endregion
-                    // region DRAW GOLEM SPAWN
                     if (showVillagesGolem)
                         drawGolemSpawn(buffer, new Vector4f(0f, 1f, 0f, 1f));
-                    // endregion
-                    // region DRAW CENTER
                     if (showVillagesCenter)
                         drawCenter(buffer, new Vector4f(1f, 0f, 0f, 1f));
-                    //endregion
-                    GlStateManager.popMatrix();
                     if (showVillagesInfo)
                     {
+                        GlStateManager.translate(0f, 1.5f, 0f);
                         GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
-                        /*Vector3d center = new Vector3d(-0.5f + data.center.getX() - plX,
-                                -0.5f + data.center.getY() - plY + v1,
-                                -0.5f + data.center.getZ() - plZ);*/
                         GlStateManager.rotate(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
                         GlStateManager.rotate((float) (renderManager.options.thirdPersonView == 2 ? -1 : 1) * renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
-
+                        GlStateManager.scale(scaleFactor, scaleFactor, -scaleFactor);
                         GlStateManager.enableBlend();
                         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
                         GlStateManager.enableTexture2D();
-                        drawTextInfo("Villagers : " + data.villagerCount, v1, scaleFactor, fontrenderer);
-                        drawTextInfo("Doors : " + data.doorPositions.size(), v2, scaleFactor, fontrenderer);
+                        drawTextInfo("Villagers : " + data.villagerCount, 1, scaleFactor, fontrenderer);
+                        drawTextInfo("Doors : " + data.doorPositions.size(), 2, scaleFactor, fontrenderer);
                         boolean canSpaw = data.doorPositions.size() > 20;
-                        drawTextInfo((canSpaw ? TextFormatting.GREEN : TextFormatting.DARK_RED) + "Max Golem : " + (canSpaw ? data.villagerCount / 10 : "-"), v3, scaleFactor, fontrenderer);
-                        drawTextInfo("Reputation : " + data.reputation, v4, scaleFactor, fontrenderer);
+                        drawTextInfo("Max Golem : " + (canSpaw ? (TextFormatting.GREEN + Integer.toString(data.villagerCount / 10)) : TextFormatting.DARK_RED + "" + TextFormatting.BOLD + "0"), 3, scaleFactor, fontrenderer);
+                        drawTextInfo("Reputation : " + data.reputation, 4, scaleFactor, fontrenderer);
                         GlStateManager.disableBlend();
                     }
                 }
@@ -128,18 +111,13 @@ public class VillageDataHandler
         }
     }
 
-    private void drawTextInfo(String text, double offset, double scaleFactor, FontRenderer fontrenderer)
+    private void drawTextInfo(String text, int lineNumber, double scaleFactor, FontRenderer fontrenderer)
     {
-        GlStateManager.translate(0, offset, 0);
-        GlStateManager.scale(scaleFactor, scaleFactor, -scaleFactor);
-        fontrenderer.drawString(text, -fontrenderer.getStringWidth(text) / 2, 0, -1);
-        GlStateManager.scale(1f/scaleFactor, 1f/scaleFactor, -1f/scaleFactor);
-        GlStateManager.translate(0, -offset, 0);
+        fontrenderer.drawString(text, -fontrenderer.getStringWidth(text) / 2, 10 * lineNumber, -1);
     }
 
     private void drawCenter(VertexBuffer buffer, Vector4f color)
     {
-        GlStateManager.glLineWidth(1);
         buffer.begin(GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
         buffer.pos(-0.5, -0.5, -0.5).color(color.x, color.y, color.z, color.w).endVertex();
         buffer.pos(-0.5, -0.5, 0.5).color(color.x, color.y, color.z, color.w).endVertex();
@@ -164,7 +142,6 @@ public class VillageDataHandler
 
     private void drawGolemSpawn(VertexBuffer buffer, Vector4f color)
     {
-        GlStateManager.glLineWidth(1);
         buffer.begin(GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
         buffer.pos(-8.5f, -3, -8.5f).color(color.x, color.y, color.z, color.w).endVertex();
         buffer.pos(-8.5f, -3, 8.5f).color(color.x, color.y, color.z, color.w).endVertex();
@@ -197,11 +174,11 @@ public class VillageDataHandler
         buffer.pos(radius + 0.5f, 0, -radius - 0.5f).color(color.x, color.y, color.z, color.w).endVertex();
         buffer.pos(-radius - 0.5f, 0, -radius - 0.5f).color(color.x, color.y, color.z, color.w).endVertex();
         Tessellator.getInstance().draw();
+        GlStateManager.glLineWidth(1);
     }
 
     private void drawDoors(BlockPos center, List<BlockPos> doorPositions, VertexBuffer buffer, Vector4f color)
     {
-        GlStateManager.glLineWidth(1);
         buffer.begin(GL_LINES, DefaultVertexFormats.POSITION_COLOR);
         for (BlockPos doorPos : doorPositions)
         {
@@ -219,7 +196,6 @@ public class VillageDataHandler
 
     private void drawBorderSpehere(int radius, VertexBuffer buffer, Vector4f color)
     {
-        GlStateManager.glLineWidth(1);
         int space = 5;
         int upper = 90;
         int upper2 = 360 - space;
