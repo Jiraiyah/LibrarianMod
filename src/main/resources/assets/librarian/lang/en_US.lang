@@ -1,14 +1,9 @@
 tile.librarian.chunkloader.name=Chunk Loader
 tile.librarian.villageindicator.name=Village Indicator
 
-item.librarian.livingcage.name=Living Cage
-
-librarian.key.villagedata=Village Data
-librarian.key.villagedatadoors=Village Data Doors Graphic
-librarian.key.villagedatagolem=Village Data Golem Graphic
-librarian.key.villagedataborder=Village Data Border Graphic
-librarian.key.villagedatainfo=Village Data Info Test
-librarian.key.villagedatacenter=Village Data Center Graphic
-librarian.key.villagedatasphere=Village Data Sphere Graphic
+item.librarian.livingcell.name=Living Cell
+item.librarian.diamondcore.name=Diamond Core
+item.librarian.conductiveemerald.name=Conductive Emerald
+item.librarian.conductivediamond.name=Conductive Diamond
 
 librarian.key.categories=Librarian

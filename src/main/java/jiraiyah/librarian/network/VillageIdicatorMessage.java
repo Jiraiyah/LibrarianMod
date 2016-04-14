@@ -1,37 +1,25 @@
 package jiraiyah.librarian.network;
 
-import io.netty.buffer.ByteBuf;
-import jiraiyah.librarian.events.VillageDataHandler;
-import jiraiyah.librarian.infrastructure.VillageData;
-import jiraiyah.librarian.inits.NetworkMessages;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-@SuppressWarnings("unused")
+/*
 public class VillageIdicatorMessage implements IMessageHandler<VillageIdicatorMessage.Packet, IMessage>
 {
     @Override
     public IMessage onMessage ( VillageIdicatorMessage.Packet message, MessageContext ctx )
     {
-        /*Minecraft.getMinecraft().addScheduledTask( () ->
-                ((VillageIndicatorTile)Minecraft
+        */
+/*Minecraft.getMinecraft().addScheduledTask( () ->
+                ((ChunkLoaderTile)Minecraft
                         .getMinecraft()
                         .theWorld
                         .getTileEntity(message.entityPos))
-                        .UpdateDataFromServer(message.data));*/
+                        .UpdateDataFromServer(message.data));*//*
+
         VillageDataHandler.setVillageData(message.data);
         return null;
     }
 
-    /*public static void sendMessage(MinecraftServer minecraftServer, List<VillageData> data, BlockPos pos)
+    */
+/*public static void sendMessage(MinecraftServer minecraftServer, List<VillageData> data, BlockPos pos)
     {
         Packet packet = new Packet(data, pos);
         for (EntityPlayerMP player : minecraftServer.getPlayerList().getPlayerList())
@@ -40,7 +28,8 @@ public class VillageIdicatorMessage implements IMessageHandler<VillageIdicatorMe
             if (pos.distanceSq(playerPosition) < 100 * 100)
                     NetworkMessages.network.sendTo(packet, player);
         }
-    }*/
+    }*//*
+
 
     public static void sendMessage(UUID player, List<VillageData> data)
     {
@@ -102,3 +91,4 @@ public class VillageIdicatorMessage implements IMessageHandler<VillageIdicatorMe
         }
     }
 }
+*/

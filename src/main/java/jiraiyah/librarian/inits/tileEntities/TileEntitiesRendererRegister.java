@@ -6,7 +6,7 @@ public class TileEntitiesRendererRegister
 {
     public static void register()
     {
-        //ClientRegistry.bindTileEntitySpecialRenderer(VillageIndicatorTile.class, new VillageIndicatorTESR());
+        //ClientRegistry.bindTileEntitySpecialRenderer(ChunkLoaderTile.class, new VillageIndicatorTESR());
         Log.info("=========================================================> Registered TESR");
     }
 }

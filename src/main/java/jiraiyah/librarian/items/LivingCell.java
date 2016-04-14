@@ -37,12 +37,12 @@ import java.util.List;
 import static jiraiyah.librarian.references.Names.NBT.*;
 
 @SuppressWarnings({"WeakerAccess", "RedundantArrayCreation", "unchecked"})
-public class LivingCage extends Item
+public class LivingCell extends Item
 {
     public static final List<ItemStack> genericNiceRecipeItemList = new ArrayList();
     public static final List<ItemStack> genericEvilRecipeItemList = new ArrayList();
 
-    public LivingCage()
+    public LivingCell()
     {
         setUnlocalizedName(Reference.MOD_ID.toLowerCase() + "." + Names.LIVING_CAGE_NAME);
         setRegistryName(Names.LIVING_CAGE_NAME);

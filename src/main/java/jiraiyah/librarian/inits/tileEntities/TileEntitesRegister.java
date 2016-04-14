@@ -6,7 +6,7 @@ public class TileEntitesRegister
 {
     public static void register()
     {
-        //GameRegistry.registerTileEntity(VillageIndicatorTile.class, Names.VILLAGE_INDICATOR_TILE_NAME);
+        //GameRegistry.registerTileEntity(ChunkLoaderTile.class, Names.VILLAGE_INDICATOR_TILE_NAME);
         Log.info("=========================================================> Registered Tile Entities");
     }
 }

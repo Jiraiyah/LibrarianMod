@@ -4,9 +4,10 @@ public class Names
 {
     public static final String CHUNK_LOADER_NAME = "chunkloader";
     public static final String CHUNK_LOADER_TILE_NAME = "chunkloadertile";
-    public static final String LIVING_CAGE_NAME = "livingcage";
-    public static final String VILLAGE_INDICATOR_NAME = "villageindicator";
-    public static final String VILLAGE_INDICATOR_TILE_NAME = "villageindicatortile";
+    public static final String LIVING_CAGE_NAME = "livingcell";
+    public static final String CONDUCTIVE_EMERALD_NAME = "conductiveemerald";
+    public static final String CONDUCTIVE_DIAMOND_NAME = "conductivediamond";
+    public static final String DIAMOND_CORE_NAME = "diamondcore";
 
     public class NBT
     {
