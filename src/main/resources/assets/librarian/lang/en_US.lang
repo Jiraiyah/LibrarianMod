@@ -7,3 +7,5 @@ item.librarian.conductiveemerald.name=Conductive Emerald
 item.librarian.conductivediamond.name=Conductive Diamond
 
 librarian.key.categories=Librarian
+
+librarian.accessdenied=This Chunkloader does not belong to you.

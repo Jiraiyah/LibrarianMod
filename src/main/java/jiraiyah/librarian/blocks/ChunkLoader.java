@@ -1,26 +1,32 @@
 package jiraiyah.librarian.blocks;
 
 import jiraiyah.librarian.Librarian;
+import jiraiyah.librarian.events.ChunkLoaderManager;
 import jiraiyah.librarian.references.Names;
 import jiraiyah.librarian.references.Reference;
-import net.minecraft.block.Block;
+import jiraiyah.librarian.tileEntities.ChunkLoaderBaseTile;
+import jiraiyah.librarian.tileEntities.ChunkLoaderTile;
+import jiraiyah.librarian.utilities.ServerUtils;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import static net.minecraft.util.BlockRenderLayer.CUTOUT;
 
-public class ChunkLoader extends Block
+public class ChunkLoader extends BlockContainer
 {
 
     //region cTor
@@ -84,7 +90,6 @@ public class ChunkLoader extends Block
     public boolean isSideSolid(IBlockState base_state, IBlockAccess world, BlockPos pos, EnumFacing side)
     {
         return true;
-        //return side == EnumFacing.DOWN;
     }
 
     @Override
@@ -98,9 +103,21 @@ public class ChunkLoader extends Block
     {
         if (worldIn.isRemote && playerIn.isSneaking())
         {
-            // TODO : add code if we want to load more than single chunk per block
+            return false;
         }
-        return false;
+        ChunkLoaderTile tile = (ChunkLoaderTile) worldIn.getTileEntity(pos);
+        if (tile.owner == null || tile.owner.equals(playerIn.getName()) ||
+                ChunkLoaderManager.opInteract() && ServerUtils.isPlayerOP(playerIn.getName()))
+        {
+            PacketCustom packet = new PacketCustom(ChunkLoaderSPH.channel, 12);
+            packet.writeCoord(pos);
+            packet.sendToPlayer(playerIn);
+        }
+        else
+        {
+            playerIn.addChatMessage(new TextComponentTranslation("librarian.accessdenied"));
+        }
+        return true;
     }
 
     @Override
@@ -108,6 +125,13 @@ public class ChunkLoader extends Block
     {
         if (worldIn.isRemote)
             return;
-        // TODO : add code
+        ChunkLoaderBaseTile ctile = (ChunkLoaderBaseTile) worldIn.getTileEntity(pos);
+        ctile.onBlockPlacedBy(placer);
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(World world, int i)
+    {
+        return new ChunkLoaderTile();
     }
 }

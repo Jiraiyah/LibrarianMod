@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.server.FMLServerHandler;
 
+@SuppressWarnings("unchecked")
 public class ChunkLoaderLoginTimes extends SaveModule
 {
 	private static final long MAX_WAIT_TIME = 604800000L;
@@ -59,10 +60,10 @@ public class ChunkLoaderLoginTimes extends SaveModule
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		loginTimes.clear();
-		NBTTagList loginTimes = nbt.getTagList("LoginTimes", 10);
-		for (int i = 0; i < loginTimes.tagCount(); i++)
+		NBTTagList logTimes = nbt.getTagList("LoginTimes", 10);
+		for (int i = 0; i < logTimes.tagCount(); i++)
 		{
-			NBTTagCompound loginTime = loginTimes.getCompoundTagAt(i);
+			NBTTagCompound loginTime = logTimes.getCompoundTagAt(i);
 			GameProfile profile = NBTUtils.profileFromNBT(loginTime);
 			if (profile != null)
 				loginTimes.put(profile, loginTime.getLong("LoginTime"));
@@ -75,9 +76,10 @@ public class ChunkLoaderLoginTimes extends SaveModule
 		final NBTTagList tagList = new NBTTagList();
 		loginTimes.forEachEntry(new TObjectLongProcedure()
 		{
-			public boolean execute(GameProfile a, long b)
+			@Override
+			public boolean execute(Object a, long b)
 			{
-				NBTTagCompound t = NBTUtils.proifleToNBT(a);
+				NBTTagCompound t = NBTUtils.proifleToNBT((GameProfile)a);
 				t.setLong("LoginTime", b);
 				tagList.appendTag(t);
 				return true;
