@@ -6,7 +6,7 @@ import net.minecraft.world.World;
 
 import java.util.Collection;
 
-public interface IChunkLoader
+public abstract interface IChunkLoader
 {
     String getOwner();
     Object getMod();

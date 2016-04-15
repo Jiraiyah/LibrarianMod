@@ -1,6 +1,6 @@
 package jiraiyah.librarian;
 
-import jiraiyah.librarian.infrastructure.ChunkData;
+import jiraiyah.librarian.infrastructure.ConfigFile;
 import jiraiyah.librarian.proxies.CommonProxy;
 import jiraiyah.librarian.references.Reference;
 import jiraiyah.librarian.utilities.GenericCreativeTab;
@@ -18,9 +18,8 @@ import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
+import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 /*
 
 Set your command block to repeat, always active
@@ -34,6 +33,7 @@ public class Librarian
 {
     public static final boolean deobf_folder;
     public static final boolean deobf;
+    public static ConfigFile config;
 
     static
     {
@@ -63,8 +63,6 @@ public class Librarian
     @Instance(Reference.MOD_ID)
     public static Librarian INSTANCE;
 
-    public static List<ChunkData> LOADING_CHUNKS = new ArrayList<>();
-
     @SidedProxy(clientSide = Reference.CLIENT_PROXY, serverSide = Reference.COMMON_PROXY)
     public static CommonProxy PROXY;
 
@@ -73,6 +71,8 @@ public class Librarian
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+        config = new ConfigFile(new File(event.getModConfigurationDirectory(), "Librarian.cfg"))
+                .setComment("ChunkLoader Configuration File\nDeleting any element will restore it to it's default value\nBlock ID's will be automatically generated the first time it's run");
         PROXY.preInit(event);
         if ( Loader.isModLoaded( "Waila" ))
             FMLInterModComms.sendMessage( "Waila","register","jiraiyah.jpiston.compatibility.WailaCompatibility.register" );
@@ -82,7 +82,7 @@ public class Librarian
     public void init(FMLInitializationEvent event)
     {
         PROXY.init(event);
-        CREATIVE_TAB.setIcon(Items.enchanted_book);
+        CREATIVE_TAB.setIcon(Items.ENCHANTED_BOOK);
     }
 
     @EventHandler

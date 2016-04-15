@@ -6,6 +6,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.server.FMLServerHandler;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class ServerUtils
@@ -30,5 +32,20 @@ public class ServerUtils
 
     public static EntityPlayerMP getPlayer(String playername) {
         return mc().getPlayerList().getPlayerByUsername(playername);
+    }
+
+    public static ArrayList<EntityPlayer> getPlayersInDimension(int dimension)
+    {
+        ArrayList<EntityPlayer> players = new ArrayList<EntityPlayer>();
+        for (EntityPlayer p : getPlayers())
+            if(p.dimension == dimension)
+                players.add(p);
+
+        return players;
+    }
+
+    public static List<EntityPlayerMP> getPlayers()
+    {
+        return mc().getPlayerList().getPlayerList();
     }
 }

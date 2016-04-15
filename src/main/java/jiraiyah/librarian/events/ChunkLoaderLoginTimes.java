@@ -3,7 +3,6 @@ package jiraiyah.librarian.events;
 import com.mojang.authlib.GameProfile;
 import gnu.trove.map.hash.TObjectLongHashMap;
 import gnu.trove.procedure.TObjectLongProcedure;
-import jiraiyah.librarian.infrastructure.SaveModule;
 import jiraiyah.librarian.utilities.NBTUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -46,7 +45,7 @@ public class ChunkLoaderLoginTimes extends SaveModule
 			}
 		}
 		long l = System.currentTimeMillis() - loginTimes.get(profile);
-		return l < 604800000L;
+		return l < MAX_WAIT_TIME;
 	}
 
 	@SubscribeEvent

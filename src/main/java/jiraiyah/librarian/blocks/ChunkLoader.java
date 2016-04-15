@@ -2,12 +2,14 @@ package jiraiyah.librarian.blocks;
 
 import jiraiyah.librarian.Librarian;
 import jiraiyah.librarian.events.ChunkLoaderManager;
+import jiraiyah.librarian.infrastructure.PacketCustom;
+import jiraiyah.librarian.network.ChunkLoaderSPH;
 import jiraiyah.librarian.references.Names;
 import jiraiyah.librarian.references.Reference;
 import jiraiyah.librarian.tileEntities.ChunkLoaderBaseTile;
 import jiraiyah.librarian.tileEntities.ChunkLoaderTile;
 import jiraiyah.librarian.utilities.ServerUtils;
-import net.minecraft.block.BlockContainer;
+import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -26,13 +28,13 @@ import net.minecraft.world.World;
 
 import static net.minecraft.util.BlockRenderLayer.CUTOUT;
 
-public class ChunkLoader extends BlockContainer
+public class ChunkLoader extends Block
 {
 
     //region cTor
     public ChunkLoader()
     {
-        this(Material.rock);
+        this(Material.ROCK);
         setUnlocalizedName(Reference.MOD_ID.toLowerCase() + "." + Names.CHUNK_LOADER_NAME);
         setRegistryName(Names.CHUNK_LOADER_NAME);
         setHardness(20);
@@ -90,6 +92,7 @@ public class ChunkLoader extends BlockContainer
     public boolean isSideSolid(IBlockState base_state, IBlockAccess world, BlockPos pos, EnumFacing side)
     {
         return true;
+        //return side == EnumFacing.DOWN;
     }
 
     @Override
@@ -130,7 +133,13 @@ public class ChunkLoader extends BlockContainer
     }
 
     @Override
-    public TileEntity createNewTileEntity(World world, int i)
+    public boolean hasTileEntity(IBlockState state)
+    {
+        return true;
+    }
+
+    @Override
+    public TileEntity createTileEntity(World world, IBlockState state)
     {
         return new ChunkLoaderTile();
     }
